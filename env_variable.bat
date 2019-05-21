@@ -1,0 +1,5 @@
+setx /M "EDGE_SDK_HOME" "C:\Program Files\ADLINK\EdgeSDK\1.0.2"
+setx /M "OSPL_HOME" "C:\Program Files\ADLINK\Vortex_v2\Device\VortexOpenSplice\6.10.1p2\RTS\x86_64.win64"
+setx /M "PATH" "C:\Program Files\ADLINK\EdgeSDK\1.0.2\bin;C:\Program Files\ADLINK\Vortex_v2\Device\VortexOpenSplice\6.10.1p2\RTS\x86_64.win64\bin;%PATH%"
+setx /M "OSPL_TMPL_PATH" "%OSPL_HOME%\etc\idlpp"
+setx /M "OSPL_URI" "file://%OSPL_HOME%\etc\config\ospl.xml"
