@@ -5,3 +5,10 @@ C:\Users\Bernie\source\repos\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSh
 C:\Users\Bernie\source\repos\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.exe
 C:\Users\Bernie\source\repos\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.pdb
 C:\Users\Bernie\source\repos\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.csprojAssemblyReference.cache
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\bin\x64\Debug\EdgeCSharpSend.exe.config
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\bin\x64\Debug\EdgeCSharpSend.exe
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\bin\x64\Debug\EdgeCSharpSend.pdb
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.csprojAssemblyReference.cache
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.csproj.CoreCompileInputs.cache
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.exe
+D:\MCM POC\EdgeSDK\EdgeCSharpSend\EdgeCSharpSend\obj\x64\Debug\EdgeCSharpSend.pdb

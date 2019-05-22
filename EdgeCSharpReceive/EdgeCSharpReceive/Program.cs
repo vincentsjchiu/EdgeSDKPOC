@@ -21,7 +21,7 @@ namespace EdgeCSharpReceive
 
                 /*Initial DataConnect Pro Connection*/
 
-                int initialSuccess = client.Initial(0, "test19", "garage", "VCM", out deviceId);
+                //int initialSuccess = client.Initial(0, "test19", "garage", "VCM", out deviceId);
 
                 //if (initialSuccess == false)
                 //{
@@ -47,9 +47,9 @@ namespace EdgeCSharpReceive
                         Console.WriteLine("CH0_OA = " + tags["CH0_OA"]);
                         
                         //sent to DataConnectPro
-                        client.SendData(strReceive);
+                        //client.SendData(strReceive);
 
-                        /*System.Threading.Thread.Sleep(1000);
+                        System.Threading.Thread.Sleep(1000);
 
                         Console.WriteLine("Start Receive Rawdata...");
 
@@ -59,7 +59,7 @@ namespace EdgeCSharpReceive
                         Marshal.Release(receiveRawdata);
                         dynamic rawdata = JsonConvert.DeserializeObject(strReceiveRawdata);
                         Console.WriteLine("CH0_OA = " + rawdata["CH0_OA"]);
-                        Console.WriteLine("rawdata = " + rawdata["rawdata"]);*/
+                        Console.WriteLine("rawdata = " + rawdata["rawdata"]);
 
 
                         System.Threading.Thread.Sleep(1000);

@@ -27,3 +27,4 @@ D:\MCM POC\EdgeSDK\ITRI\ITRIPMS\ITRIPMS\bin\Debug\sv\ZedGraph.resources.dll
 D:\MCM POC\EdgeSDK\ITRI\ITRIPMS\ITRIPMS\bin\Debug\tr\ZedGraph.resources.dll
 D:\MCM POC\EdgeSDK\ITRI\ITRIPMS\ITRIPMS\bin\Debug\zh-cn\ZedGraph.resources.dll
 D:\MCM POC\EdgeSDK\ITRI\ITRIPMS\ITRIPMS\bin\Debug\zh-tw\ZedGraph.resources.dll
+D:\MCM POC\EdgeSDK\ITRI\ITRIPMS\ITRIPMS\obj\Debug\ITRIPMS.Form2.resources
