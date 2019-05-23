@@ -59,8 +59,9 @@ namespace ITRIPMS
             string configFilePath;
             configFilePath = "C:\\ITRIPMS\\configuration.json";
             readjson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(configFilePath));
+            config.samplerate = Convert.ToInt32(readjson["SampleRate"]);
             config.samplelength = Convert.ToInt32(readjson["SampleLength"]);
-            //config.allrawdata = new double[config.samplelength];
+            config.allrawdata = new double[Convert.ToInt32(config.samplerate)];
             config.subrawdata = new double[config.samplelength];
             config.fftResult = new double[config.samplelength];
             config.nudThreshold = Convert.ToDouble(readjson["Threshold"]);//全部的閥值 80以上為有問題
@@ -93,11 +94,7 @@ namespace ITRIPMS
                     Console.WriteLine("Vrms = " + config.Vrms.ToString());
                     Console.WriteLine("Grms = " + config.Grms.ToString());
                     Console.WriteLine("EHI = " + config.EHI.ToString());
-                    config.result = diagnosisDllimport(config.subrawdata);
-                    /*for (int i = 0; i < Test.Length; i++)
-                    {
-                        Console.WriteLine(Test[i].ToString());
-                    }*/
+                    config.result = diagnosisDllimport(config.subrawdata);                   
                     this.Invoke((MethodInvoker)delegate
                     {
                         metroTextBoxEHI.Text = config.EHI.ToString();
@@ -129,7 +126,7 @@ namespace ITRIPMS
         private double[] diagnosisDllimport(double[] channel_data)
         {
 
-            PMS.setFa(6000 / 60);
+            PMS.setFa(config.Rpm / 60);
             PMS.setBallBearingParams(0, 0, 0, 0, 0, 0, 0);
             PMS.setNRotors(0);
             PMS.setGearParams(0, 0);
@@ -138,7 +135,9 @@ namespace ITRIPMS
             PMS.findFeatures(config.fftResult, config.envelopeResult, config.samplelength, config.samplerate);
             PMS.diagnose1(config._result, config.nudThreshold / 100.0);
             for (int i = 0; i < config._result.Length; i++)
+            { 
                 config._result[i] = Math.Round(config._result[i], 5);
+            }
 
             return config._result;
 
@@ -146,11 +145,28 @@ namespace ITRIPMS
 
         private void metroButtonStop_Click(object sender, EventArgs e)
         {
-            if (thdreveice.IsAlive)
+            if (thdreveice != null)
             {
-                if (false == thdreveice.Join(200))
+                if (thdreveice.IsAlive)
                 {
-                    thdreveice.Abort();
+                    if (false == thdreveice.Join(200))
+                    {
+                        thdreveice.Abort();
+                    }
+                }
+            }
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (thdreveice != null)
+            {
+                if (thdreveice.IsAlive)
+                {
+                    if (false == thdreveice.Join(200))
+                    {
+                        thdreveice.Abort();
+                    }
                 }
             }
         }

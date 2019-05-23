@@ -21,15 +21,15 @@ namespace EdgeCSharpReceive
 
                 /*Initial DataConnect Pro Connection*/
 
-                //int initialSuccess = client.Initial(0, "test19", "garage", "VCM", out deviceId);
+                int initialSuccess = client.Initial(0, "test19", "garage", "VCM", out deviceId);
 
-                //if (initialSuccess == false)
-                //{
-                //    Console.WriteLine("DataConnectPro connect Fail, press any key to exit");
-                //    Console.ReadKey();
+                if (initialSuccess != 0)
+                {
+                    Console.WriteLine("DataConnectPro connect Fail, press any key to exit");
+                    Console.ReadKey();
 
-                //    return;
-                //}
+                    return;
+                }
 
                 while (true)
                 {
@@ -47,11 +47,11 @@ namespace EdgeCSharpReceive
                         Console.WriteLine("CH0_OA = " + tags["CH0_OA"]);
                         
                         //sent to DataConnectPro
-                        //client.SendData(strReceive);
+                        client.SendData(strReceive);
 
                         System.Threading.Thread.Sleep(1000);
 
-                        Console.WriteLine("Start Receive Rawdata...");
+                        /*Console.WriteLine("Start Receive Rawdata...");
 
                         IntPtr receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
                         string strReceiveRawdata = Marshal.PtrToStringAnsi(receiveRawdata);
@@ -62,7 +62,7 @@ namespace EdgeCSharpReceive
                         Console.WriteLine("rawdata = " + rawdata["rawdata"]);
 
 
-                        System.Threading.Thread.Sleep(1000);
+                        System.Threading.Thread.Sleep(1000);*/
                     }
                     catch (Exception e)
                     {
