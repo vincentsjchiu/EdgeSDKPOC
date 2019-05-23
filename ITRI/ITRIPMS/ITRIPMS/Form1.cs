@@ -10,21 +10,38 @@ using System.Windows.Forms;
 using MetroFramework.Forms;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 using PMSdignoise;
+using System.IO;
 namespace ITRIPMS
 {
     public partial class Form1 : MetroForm
     {
         Form2 myForm2;
         Thread thdreveice;
-        public double[] allrawdata = new double[25600];
-        public double[] subrawdata = new double[16384];
-        public double[] fftResult = new double[16384];
-        const int _diagnosisCount = 17;
-        public double[] _result = new double[_diagnosisCount];
-        public double nudThreshold = 10;//全部的閥值 80以上為有問題
-        public double[] Test = new double[17];
+        pmsparameter config = new pmsparameter();
+        public class pmsparameter
+        {
+            public double[] allrawdata;
+            public double[] subrawdata;
+            public double[] fftResult;
+            public const int _diagnosisCount = 17;
+            public double[] _result = new double[_diagnosisCount];
+            public double nudThreshold;//全部的閥值 80以上為有問題
+            public double[] Test = new double[17];
+            public int samplelength;
+            public double samplerate;
+            public double startF;
+            public double EndF;
+            public double Rpm;
+            public double Grms;
+            public double EHI;
+            public double Vrms;
+            public double[] result;
+            public double[] convResult;
+            public double[] envelopeResult;
+        }
         public Form1()
         {
             InitializeComponent();
@@ -36,6 +53,25 @@ namespace ITRIPMS
             myForm2.ShowDialog();
 
         }
+        private void InitialParameter()
+        {
+            JObject readjson;
+            string configFilePath;
+            configFilePath = "C:\\ITRIPMS\\configuration.json";
+            readjson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(configFilePath));
+            config.samplelength = Convert.ToInt32(readjson["SampleLength"]);
+            //config.allrawdata = new double[config.samplelength];
+            config.subrawdata = new double[config.samplelength];
+            config.fftResult = new double[config.samplelength];
+            config.nudThreshold = Convert.ToDouble(readjson["Threshold"]);//全部的閥值 80以上為有問題
+            config.startF = Convert.ToDouble(readjson["StartFrequency"]);
+            config.EndF = Convert.ToDouble(readjson["EndFrequency"]);
+            config.Rpm = Convert.ToDouble(readjson["RPM"]);
+            config.envelopeResult = new double[config.samplelength];
+            config.convResult = new double[config.samplelength];
+        }
+
+
         private void Reveice()
         {
             while (true)
@@ -43,34 +79,32 @@ namespace ITRIPMS
                 //receive data
                 try
                 {
-                    double Grms;
-                    double EHI;
-                    double Vrms;
+
                     Console.WriteLine("Start Receive Rawdata...");
-                    IntPtr receiveRawdata = Edge.CSharp.ReceiveData("rawdata");                
+                    IntPtr receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
                     string strReceiveRawdata = Marshal.PtrToStringAnsi(receiveRawdata);
                     Marshal.Release(receiveRawdata);
                     dynamic rawdata = JsonConvert.DeserializeObject(strReceiveRawdata);
-                    allrawdata = JsonConvert.DeserializeObject<double[]>(rawdata["rawdata"].ToString());
-                    Array.Copy(allrawdata, subrawdata, 16384);
-                    Vrms = PMS.forward2(subrawdata, 16384, fftResult, 16384, 25600);//vel 10816-1 group1
-                    Grms = PMS.grms(subrawdata, 16384);//all
-                    EHI = PMS.getCv(subrawdata, 16384, Vrms);
-                    Console.WriteLine("Vrms = " + Vrms.ToString());
-                    Console.WriteLine("Grms = " + Grms.ToString());
-                    Console.WriteLine("EHI = " + EHI.ToString());
-                    Test = diagnosisDllimport(subrawdata);
+                    config.allrawdata = JsonConvert.DeserializeObject<double[]>(rawdata["rawdata"].ToString());
+                    Array.Copy(config.allrawdata, config.subrawdata, config.samplelength);
+                    config.Vrms = PMS.forward2(config.subrawdata, config.samplelength, config.fftResult, config.samplelength, config.samplerate);//vel 10816-1 group1
+                    config.Grms = PMS.grms(config.subrawdata, 16384);//all
+                    config.EHI = PMS.getCv(config.subrawdata, 16384, config.Vrms);
+                    Console.WriteLine("Vrms = " + config.Vrms.ToString());
+                    Console.WriteLine("Grms = " + config.Grms.ToString());
+                    Console.WriteLine("EHI = " + config.EHI.ToString());
+                    config.result = diagnosisDllimport(config.subrawdata);
                     /*for (int i = 0; i < Test.Length; i++)
                     {
                         Console.WriteLine(Test[i].ToString());
                     }*/
                     this.Invoke((MethodInvoker)delegate
                     {
-                        metroTextBoxEHI.Text = EHI.ToString();
-                        metroTextBoxUnbalanceIndex.Text = Test[0].ToString();
-                        metroTextBoxBentshaftIndex.Text = Test[1].ToString();
-                        metroTextBoxMisalignmentIndex.Text = Test[2].ToString();
-                        metroTextBoxLoosenessIndex.Text = Test[3].ToString();
+                        metroTextBoxEHI.Text = config.EHI.ToString();
+                        metroTextBoxUnbalanceIndex.Text = config.result[0].ToString();
+                        metroTextBoxBentshaftIndex.Text = config.result[1].ToString();
+                        metroTextBoxMisalignmentIndex.Text = config.result[2].ToString();
+                        metroTextBoxLoosenessIndex.Text = config.result[3].ToString();
                     });
                     //Console.WriteLine("CH0_OA = " + rawdata["CH0_OA"]);
                     //Console.WriteLine("rawdata = " + rawdata["rawdata"]);
@@ -87,35 +121,38 @@ namespace ITRIPMS
 
         private void metroButtonStart_Click(object sender, EventArgs e)
         {
+            InitialParameter();
             thdreveice = new Thread(Reveice);
             thdreveice.Start();
 
         }
         private double[] diagnosisDllimport(double[] channel_data)
         {
-          
-            double sampleRate = 25600;
-            int sampleLength = 16384;
-            PMS.setFa(1700 / 60);
-            
-            /*PMS.setBallBearingParams(0, 0, 0, 0, 0, 0, 0);
+
+            PMS.setFa(6000 / 60);
+            PMS.setBallBearingParams(0, 0, 0, 0, 0, 0, 0);
             PMS.setNRotors(0);
-            
-            PMS.setGearParams(0, 0);*/
-            int l = 16384;
-            double[] convResult = new double[l];
-            double[] envelopeResult = new double[16384];
-            //double[] fftResult2 = new double[16384];
-            //double vrms = PMS.forward2(channel_data, l, fftResult2, sampleLength, sampleRate);
-            PMS.executeWaveletEnvelope(sampleRate, 10, 5000, 0.007, .0075, channel_data, sampleLength, convResult);//0.007 0.0075固定參數不變
-            PMS.forward2(convResult, convResult.Length, envelopeResult, envelopeResult.Length, sampleRate);
-            PMS.findFeatures(fftResult, envelopeResult, sampleLength, sampleRate);
-            PMS.diagnose1(_result, nudThreshold / 100.0);
-            for (int i = 0; i < _result.Length; i++)
-                _result[i] = Math.Round(_result[i], 5);
+            PMS.setGearParams(0, 0);
+            PMS.executeWaveletEnvelope(config.samplerate, config.startF, config.EndF, 0.007, .0075, channel_data, config.samplelength, config.convResult);//0.007 0.0075固定參數不變
+            PMS.forward2(config.convResult, config.convResult.Length, config.envelopeResult, config.envelopeResult.Length, config.samplerate);
+            PMS.findFeatures(config.fftResult, config.envelopeResult, config.samplelength, config.samplerate);
+            PMS.diagnose1(config._result, config.nudThreshold / 100.0);
+            for (int i = 0; i < config._result.Length; i++)
+                config._result[i] = Math.Round(config._result[i], 5);
 
-            return _result;
+            return config._result;
 
+        }
+
+        private void metroButtonStop_Click(object sender, EventArgs e)
+        {
+            if (thdreveice.IsAlive)
+            {
+                if (false == thdreveice.Join(200))
+                {
+                    thdreveice.Abort();
+                }
+            }
         }
     }
 }

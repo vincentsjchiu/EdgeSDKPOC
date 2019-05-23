@@ -111,6 +111,7 @@
             this.metroButtonStop.TabIndex = 6;
             this.metroButtonStop.Text = "Stop";
             this.metroButtonStop.UseSelectable = true;
+            this.metroButtonStop.Click += new System.EventHandler(this.metroButtonStop_Click);
             // 
             // metroButtonSetting
             // 
