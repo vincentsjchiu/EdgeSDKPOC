@@ -11,6 +11,10 @@
     {
       "name": "rawdata",
       "tagGroupId": "DCPRawdata:com.adlinktech.example:v1.0"
-    }
+    },
+	{
+		"name": "itritags",
+		"tagGroupId":"ITRI:com.adlinktech.example:v1.0"
+	}
   ]
 }
