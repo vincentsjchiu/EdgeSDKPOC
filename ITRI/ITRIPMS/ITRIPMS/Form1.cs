@@ -103,11 +103,11 @@ namespace ITRIPMS
                         metroTextBoxMisalignmentIndex.Text = config.result[2].ToString();
                         metroTextBoxLoosenessIndex.Text = config.result[3].ToString();
                     });
-                    //Console.WriteLine("CH0_OA = " + rawdata["CH0_OA"]);
-                    //Console.WriteLine("rawdata = " + rawdata["rawdata"]);
-
-
-                    System.Threading.Thread.Sleep(1000);
+                    Edge.CSharp.AddData("equipmentId", "Compressor05");
+                    Edge.CSharp.AddData("CH0_EHI", config.EHI);
+                    Console.WriteLine("Sent itripms...");
+                    Edge.CSharp.SentData("itripms");
+                    System.Threading.Thread.Sleep(10);
                 }
                 catch (Exception e)
                 {
