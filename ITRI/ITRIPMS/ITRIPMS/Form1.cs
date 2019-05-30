@@ -89,12 +89,13 @@ namespace ITRIPMS
                     config.allrawdata = JsonConvert.DeserializeObject<double[]>(rawdata["rawdata"].ToString());
                     Array.Copy(config.allrawdata, config.subrawdata, config.samplelength);
                     config.Vrms = PMS.forward2(config.subrawdata, config.samplelength, config.fftResult, config.samplelength, config.samplerate);//vel 10816-1 group1
-                    config.Grms = PMS.grms(config.subrawdata, 16384);//all
-                    config.EHI = PMS.getCv(config.subrawdata, 16384, config.Vrms);
+                    config.Grms = PMS.grms(config.subrawdata, config.samplelength);//all
+                    config.EHI = PMS.getCv(config.subrawdata, config.samplelength, config.Vrms);                    
                     Console.WriteLine("Vrms = " + config.Vrms.ToString());
                     Console.WriteLine("Grms = " + config.Grms.ToString());
                     Console.WriteLine("EHI = " + config.EHI.ToString());
-                    config.result = diagnosisDllimport(config.subrawdata);                   
+                    config.result = diagnosisDllimport(config.subrawdata);
+                    
                     this.Invoke((MethodInvoker)delegate
                     {
                         metroTextBoxEHI.Text = config.EHI.ToString();
@@ -103,11 +104,13 @@ namespace ITRIPMS
                         metroTextBoxMisalignmentIndex.Text = config.result[2].ToString();
                         metroTextBoxLoosenessIndex.Text = config.result[3].ToString();
                     });
+                    Thread.Sleep(1000);
                     Edge.CSharp.AddData("equipmentId", "Compressor05");
                     Edge.CSharp.AddData("CH0_EHI", config.EHI);
                     Console.WriteLine("Sent itripms...");
                     Edge.CSharp.SentData("itripms");
-                    System.Threading.Thread.Sleep(10);
+                    
+                    
                 }
                 catch (Exception e)
                 {
