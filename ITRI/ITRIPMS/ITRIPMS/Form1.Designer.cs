@@ -45,6 +45,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.richTextBoxReceive = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -337,11 +338,20 @@
             this.label5.TabIndex = 17;
             this.label5.Text = "Looseness";
             // 
+            // richTextBoxReceive
+            // 
+            this.richTextBoxReceive.Location = new System.Drawing.Point(32, 328);
+            this.richTextBoxReceive.Name = "richTextBoxReceive";
+            this.richTextBoxReceive.Size = new System.Drawing.Size(694, 96);
+            this.richTextBoxReceive.TabIndex = 18;
+            this.richTextBoxReceive.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 340);
+            this.ClientSize = new System.Drawing.Size(777, 431);
+            this.Controls.Add(this.richTextBoxReceive);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -390,6 +400,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.RichTextBox richTextBoxReceive;
     }
 }
 

@@ -21,6 +21,9 @@ namespace ITRIPMS
         Form2 myForm2;
         Thread thdreveice;
         pmsparameter config = new pmsparameter();
+        int receive = 0;
+        Random r = new Random();
+        
         public class pmsparameter
         {
             public double[] allrawdata;
@@ -41,6 +44,9 @@ namespace ITRIPMS
             public double[] result;
             public double[] convResult;
             public double[] envelopeResult;
+            public IntPtr receiveRawdata;
+            public string strReceiveRawdata;
+            public JObject rawdata;
         }
         public Form1()
         {
@@ -80,13 +86,20 @@ namespace ITRIPMS
                 //receive data
                 try
                 {
-
+                    //Console.WriteLine(DateTime.Now);
                     Console.WriteLine("Start Receive Rawdata...");
-                    IntPtr receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
-                    string strReceiveRawdata = Marshal.PtrToStringAnsi(receiveRawdata);
-                    Marshal.Release(receiveRawdata);
-                    dynamic rawdata = JsonConvert.DeserializeObject(strReceiveRawdata);
-                    config.allrawdata = JsonConvert.DeserializeObject<double[]>(rawdata["rawdata"].ToString());
+                    config.receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
+                    config.strReceiveRawdata = Marshal.PtrToStringAnsi(config.receiveRawdata);
+                    Marshal.Release(config.receiveRawdata);
+                    //Console.WriteLine(DateTime.Now);
+                    config.rawdata = (JObject)JsonConvert.DeserializeObject(config.strReceiveRawdata);
+                    config.allrawdata = JsonConvert.DeserializeObject<double[]>(config.rawdata["rawdata"].ToString());
+                    //Console.WriteLine("Equipment ID is"+ rawdata["rawequipmentId"].ToString());
+                    /*for (int i = 0; i < config.allrawdata.Length; i++)
+                    {
+                        config.allrawdata[i] = (double)(r.Next(0, 100)) / 10000;
+                    }*/
+                    
                     Array.Copy(config.allrawdata, config.subrawdata, config.samplelength);
                     config.Vrms = PMS.forward2(config.subrawdata, config.samplelength, config.fftResult, config.samplelength, config.samplerate);//vel 10816-1 group1
                     config.Grms = PMS.grms(config.subrawdata, config.samplelength);//all
@@ -105,12 +118,16 @@ namespace ITRIPMS
                         metroTextBoxLoosenessIndex.Text = config.result[3].ToString();
                     });
                     Thread.Sleep(1000);
+                    //receive = receive + 1;
+                    Console.WriteLine(DateTime.Now);
                     Edge.CSharp.AddData("equipmentId", "Compressor05");
                     Edge.CSharp.AddData("CH0_EHI", config.EHI);
                     Console.WriteLine("Sent itripms...");
                     Edge.CSharp.SentData("itripms");
-                    
-                    
+                    //Console.WriteLine(DateTime.Now);
+                    //richTextBoxReceive.Text = "Receive Rawdata..."+receive.ToString();
+
+
                 }
                 catch (Exception e)
                 {
