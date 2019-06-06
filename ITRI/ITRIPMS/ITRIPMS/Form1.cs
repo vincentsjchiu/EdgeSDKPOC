@@ -87,14 +87,18 @@ namespace ITRIPMS
                 try
                 {
                     //Console.WriteLine(DateTime.Now);
-                    Console.WriteLine("Start Receive Rawdata...");
-                    config.receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
+                    //Console.WriteLine("Start Receive Rawdata...");
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        richTextBoxReceive.Text += "Start..." + "\n";
+                    });
+                        config.receiveRawdata = Edge.CSharp.ReceiveData("rawdata");
                     config.strReceiveRawdata = Marshal.PtrToStringAnsi(config.receiveRawdata);
                     Marshal.Release(config.receiveRawdata);
                     //Console.WriteLine(DateTime.Now);
                     config.rawdata = (JObject)JsonConvert.DeserializeObject(config.strReceiveRawdata);
                     config.allrawdata = JsonConvert.DeserializeObject<double[]>(config.rawdata["rawdata"].ToString());
-                    //Console.WriteLine("Equipment ID is"+ rawdata["rawequipmentId"].ToString());
+                    Console.WriteLine("Equipment ID is "+ config.rawdata["equipmentId"].ToString());
                     /*for (int i = 0; i < config.allrawdata.Length; i++)
                     {
                         config.allrawdata[i] = (double)(r.Next(0, 100)) / 10000;
@@ -104,23 +108,27 @@ namespace ITRIPMS
                     config.Vrms = PMS.forward2(config.subrawdata, config.samplelength, config.fftResult, config.samplelength, config.samplerate);//vel 10816-1 group1
                     config.Grms = PMS.grms(config.subrawdata, config.samplelength);//all
                     config.EHI = PMS.getCv(config.subrawdata, config.samplelength, config.Vrms);                    
-                    Console.WriteLine("Vrms = " + config.Vrms.ToString());
-                    Console.WriteLine("Grms = " + config.Grms.ToString());
-                    Console.WriteLine("EHI = " + config.EHI.ToString());
+                    //Console.WriteLine("Vrms = " + config.Vrms.ToString());
+                    //Console.WriteLine("Grms = " + config.Grms.ToString());
+                    //Console.WriteLine("EHI = " + config.EHI.ToString());
                     config.result = diagnosisDllimport(config.subrawdata);
                     
                     this.Invoke((MethodInvoker)delegate
                     {
+                        richTextBoxReceive.Text += DateTime.Now + "\n";
+                        richTextBoxReceive.Text += "Equipment ID is " + config.rawdata["equipmentId"].ToString() + "\n";
+                        richTextBoxReceive.Text += "Receive Rawdata...\n";
                         metroTextBoxEHI.Text = config.EHI.ToString();
                         metroTextBoxUnbalanceIndex.Text = config.result[0].ToString();
                         metroTextBoxBentshaftIndex.Text = config.result[1].ToString();
                         metroTextBoxMisalignmentIndex.Text = config.result[2].ToString();
                         metroTextBoxLoosenessIndex.Text = config.result[3].ToString();
+                                     
                     });
                     Thread.Sleep(1000);
                     //receive = receive + 1;
                     Console.WriteLine(DateTime.Now);
-                    Edge.CSharp.AddData("equipmentId", "Compressor05");
+                    Edge.CSharp.AddData("equipmentId", config.rawdata["equipmentId"].ToString());
                     Edge.CSharp.AddData("CH0_EHI", config.EHI);
                     Console.WriteLine("Sent itripms...");
                     Edge.CSharp.SentData("itripms");
