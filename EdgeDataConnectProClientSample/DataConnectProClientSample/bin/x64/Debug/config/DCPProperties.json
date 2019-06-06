@@ -1,0 +1,6 @@
+{
+  "id": "1",
+  "classId": "DCPAgent:com.adlinktech.example:v1.0",
+  "contextId": "example1.display",
+  "description": "Edge SDK example 1 display that shows temperature data"
+}

@@ -1,0 +1,44 @@
+[
+{
+  "name": "DCP",
+  "context": "com.adlinktech.example",
+  "qosProfile": "telemetry",
+  "version": "v1.0",
+  "description": "DataConnectPro",
+  "tags": [   
+    {
+      "name": "equipmentId",
+      "description": "equipment id",
+      "kind": "STRING",
+      "unit": "NA"
+    },
+    {
+      "name": "CH0_OA",
+      "description": "CH0 OA VALUE",
+      "kind": "FLOAT64",
+      "unit": "mm/ss"
+    }
+  ]
+},
+{
+  "name": "ITRIPMS",
+  "context": "com.adlinktech.example",
+  "qosProfile": "telemetry",
+  "version": "v1.0",
+  "description": "ADLINK Edge SDK Example Temperature TagGroup",
+  "tags": [
+    {
+      "name": "equipmentId",
+      "description": "equipment id",
+      "kind": "STRING",
+      "unit": "NA"
+    },
+    {
+      "name": "CH0_EHI",
+      "description": "equipment health index",
+      "kind": "FLOAT64",
+      "unit": "NA"
+    }   
+ ]
+}
+]
