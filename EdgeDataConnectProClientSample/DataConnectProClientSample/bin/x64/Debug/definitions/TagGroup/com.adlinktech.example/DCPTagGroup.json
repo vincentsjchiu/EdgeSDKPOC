@@ -38,6 +38,30 @@
       "description": "equipment health index",
       "kind": "FLOAT64",
       "unit": "NA"
+    },
+	{
+      "name": "CH0_Unbalance",
+      "description": "Unbalance index",
+      "kind": "FLOAT64",
+      "unit": "NA"
+    },
+	{
+      "name": "CH0_Misalignment",
+      "description": "Misalignment index",
+      "kind": "FLOAT64",
+      "unit": "NA"
+    }, 
+	{
+      "name": "CH0_BentShaft",
+      "description": "BentShaft index",
+      "kind": "FLOAT64",
+      "unit": "NA"
+    },
+	{
+      "name": "CH0_Looseness",
+      "description": "Looseness index",
+      "kind": "FLOAT64",
+      "unit": "NA"
     }   
  ]
 }

@@ -55,6 +55,16 @@ namespace ITRIPMS
             writedjson["StartFrequency"] = numericUpDownStartFrequency.Value;
             writedjson["EndFrequency"] = numericUpDownEndFrequency.Value;
             writedjson["RPM"] = numericUpDownRPM.Value;
+            writedjson["RotorBar"] = numericUpDownRotorBar.Value;
+            writedjson["ContactAngle"] = numericUpDownContactAngle.Value;
+            writedjson["BearingDiameter"] = numericUpDownBearingDiameter.Value;
+            writedjson["NumberofBalls"] = numericUpDownNBalls.Value;
+            writedjson["BallDiameter"] = numericUpDownBallDiameter.Value;
+            writedjson["OuterRaceDefect"] = numericUpDownORD.Value;
+            writedjson["InnerRaceDefect"] = numericUpDownIRD.Value;
+            writedjson["BallDefect"] = numericUpDownBD.Value;
+            writedjson["DrivenGear"] = numericUpDownDGfp.Value;
+            writedjson["NumberofGears"] = numericUpDownNGears.Value;
             File.WriteAllText(configFilePath, writedjson.ToString());
         }
         private void ReadConfiguartion()

@@ -193,7 +193,6 @@ D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\bin
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\bin\x64\Debug\ru\System.Spatial.resources.dll
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\bin\x64\Debug\zh-Hans\System.Spatial.resources.dll
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\bin\x64\Debug\zh-Hant\System.Spatial.resources.dll
-D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.csprojAssemblyReference.cache
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.Form1.resources
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.Properties.Resources.resources
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.csproj.GenerateResource.cache
@@ -201,3 +200,4 @@ D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.csproj.CopyComplete
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.exe
 D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.pdb
+D:\MCM POC\EdgeSDK\EdgeDataConnectProClientSample\DataConnectProClientSample\obj\x64\Debug\DataConnectProClientSample.csprojAssemblyReference.cache

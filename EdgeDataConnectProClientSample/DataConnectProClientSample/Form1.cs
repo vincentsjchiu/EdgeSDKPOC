@@ -36,9 +36,10 @@ namespace DataConnectProClientSample
         string deviceId;
         JObject topicName;
         Thread thdreveice;
+        dynamic tags;
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            Edge.CSharp.Init();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -120,12 +121,13 @@ namespace DataConnectProClientSample
         {
             username = this.metroTextBoxUsername.Text;
             password = this.metroTextBoxPassword.Text;
-            initialSuccess = client.Initial(cardNumber, username, password, messageName, out deviceId);
+            initialSuccess = client.Initial(cardNumber, username, password, messageName, out deviceId);          
             this.textBoxDeviceID.Text = deviceId;
             if (initialSuccess == 0)
             {
                 MessageBox.Show("Initial Success");
                 client.MessageReached += Client_MessageReached;
+                
                 thdreveice = new Thread(Reveice);
                 thdreveice.Start();
 
@@ -143,45 +145,77 @@ namespace DataConnectProClientSample
                 try
                 {
                     topicName = new JObject();
+                    
                     //Console.WriteLine("Start Receive Tags...");                    
-                    IntPtr receive = Edge.CSharp.ReceiveData("tags");
-                    string strReceive = Marshal.PtrToStringAnsi(receive);
-                    Marshal.Release(receive);
-                    dynamic tags = JsonConvert.DeserializeObject(strReceive);                                      
-                    this.Invoke((MethodInvoker)delegate
+                    IntPtr receive = Edge.CSharp.ReceiveDataEx("tags");
+                    if (receive != IntPtr.Zero) //Ensure return result
                     {
-                        richTextBoxMessagefromDataConnectPro.Text += DateTime.Now + "\n";
-                        richTextBoxMessagefromDataConnectPro.Text += "Equipment ID is " + tags["equipmentId"]+"\n";
-                        richTextBoxMessagefromDataConnectPro.Text += "CH0_OA = " + tags["CH0_OA"] + "\n";
-                        
-                    });
-                    System.Threading.Thread.Sleep(2000);
-                    IntPtr receivepms = Edge.CSharp.ReceiveData("itripms");
-                    string strReceivepms = Marshal.PtrToStringAnsi(receivepms);
-                    Marshal.Release(receivepms);
-                    dynamic tagspms = JsonConvert.DeserializeObject(strReceivepms);
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        richTextBoxMessagefromDataConnectPro.Text += DateTime.Now + "\n";
-                        richTextBoxMessagefromDataConnectPro.Text += "Equipment ID is " + tagspms["equipmentId"] + "\n";
-                        richTextBoxMessagefromDataConnectPro.Text += "CH0_EHI = " + tagspms["CH0_EHI"] + "\n";
-                        
-                    });
-                    topicName["equipmentId"] = tagspms["equipmentId"];
-                    topicName["equipmentRunStatus"] = 1;
-                    topicName["MessageName"] = "VCM";
-                    topicName["CH0_OA"] = tags["CH0_OA"];
-                    topicName["CH0_EHI"] = tagspms["CH0_EHI"];
-                    sendDataSuccess = client.SendData(topicName.ToString());
-                    if (sendDataSuccess != 0)
-                    {
-                        MessageBox.Show("SendData Fail");
+                        string strReceive = Marshal.PtrToStringAnsi(receive);
+                        Marshal.Release(receive);
+                        tags = JsonConvert.DeserializeObject(strReceive);
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            richTextBoxMessagefromDataConnectPro.Text = DateTime.Now+" CH0_OA = " + tags["CH0_OA"];
+                            //richTextBoxMessagefromDataConnectPro.Text = "Equipment ID is " + tags["equipmentId"] + "\n";
+                            //richTextBoxMessagefromDataConnectPro.Text = "CH0_OA = " + tags["CH0_OA"] + "\n";
+
+                        });
                     }
-                    System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(10);
+                    IntPtr receivepms = Edge.CSharp.ReceiveDataEx("itripms");
+                    if (receivepms != IntPtr.Zero) //Ensure return result
+                    {
+                        string strReceivepms = Marshal.PtrToStringAnsi(receivepms);
+                        Marshal.Release(receivepms);
+                        dynamic tagspms = JsonConvert.DeserializeObject(strReceivepms);
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            richTextBoxMessagefromDataConnectPro.Text = DateTime.Now + " CH0_EHI = " + tagspms["CH0_EHI"];
+                            //richTextBoxMessagefromDataConnectPro.Text = "Equipment ID is " + tagspms["equipmentId"] + "\n";
+                            //richTextBoxMessagefromDataConnectPro.Text = "CH0_EHI = " + tagspms["CH0_EHI"] + "\n";
+
+                        });
+                        topicName["equipmentId"] = tagspms["equipmentId"];
+                        topicName["equipmentRunStatus"] = 1;
+                        topicName["MessageName"] = "VCM";
+                        topicName["CH0_OA"] = tags["CH0_OA"];
+                        topicName["CH0_EHI"] = tagspms["CH0_EHI"];
+                        topicName["CH0_Unbalance"] = tagspms["CH0_Unbalance"];
+                        topicName["CH0_Misalignment"] = tagspms["CH0_Misalignment"];
+                        topicName["CH0_BentShaft"] = tagspms["CH0_BentShaft"];
+                        topicName["CH0_Looseness"] = tagspms["CH0_Looseness"];
+                        sendDataSuccess = client.SendData(topicName.ToString());
+                        if (sendDataSuccess != 0)
+                        {
+                            MessageBox.Show("SendData Fail");
+                        }
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            richTextBoxMessagefromDataConnectPro.Text = DateTime.Now + " Send data to DCP Done";
+                            //richTextBoxMessagefromDataConnectPro.Text = "Send data to DCP Done.." + "\n";
+                        });
+                    }
+                        System.Threading.Thread.Sleep(100);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
+                }
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (thdreveice != null)
+            {
+                
+                if (thdreveice.IsAlive)
+                {
+                    if (false == thdreveice.Join(200))
+                    {
+                        thdreveice.Abort();
+                        Edge.CSharp.Deinit();
+                    }
                 }
             }
         }
